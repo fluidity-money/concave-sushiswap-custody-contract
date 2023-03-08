@@ -26,6 +26,13 @@ struct DecreaseLiquidityParams {
 }
 
 interface INonfungiblePositionManager {
+    function createAndInitializePoolIfNecessary(
+        address token0,
+        address token1,
+        uint24 fee,
+        uint160 sqrtPriceX96
+    ) external returns (address);
+
     function mint(MintParams calldata params) external returns (
         uint256 tokenId,
         uint128 liquidity,
@@ -33,20 +40,7 @@ interface INonfungiblePositionManager {
         uint256 amount1
     );
 
-    function positions(uint256 tokenId) external view returns (
-        uint96 nonce,
-        address operator,
-        address token0,
-        address token1,
-        uint24 fee,
-        int24 tickLower,
-        int24 tickUpper,
-        uint128 liquidity,
-        uint256 feeGrowthInside0LastX128,
-        uint256 feeGrowthInside1LastX128,
-        uint128 tokensOwed0,
-        uint128 tokensOwed1
-    );
+    function transferFrom(address _from, address _to, uint256 _tokenId) external;
 
     function decreaseLiquidity(DecreaseLiquidityParams calldata params) external returns (
         uint256 amount0,

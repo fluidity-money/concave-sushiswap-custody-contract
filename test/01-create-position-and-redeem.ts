@@ -26,6 +26,11 @@ describe("concave custody contract", async () => {
 
       const liquidityAmount = 1000;
 
+      const nonfungiblePositionManager = await hre.ethers.getContractAt(
+        "INonfungiblePositionManager",
+        DEFAULT_NON_FUNGIBLE_POSITION_MANAGER
+      );
+
       const mockFluidUsdc = await deploy("ERC20", "Fluid USDC", "fUSDC", 18, startingBal);
 
       const mockUsdc = await deploy("ERC20", "USDC", "USDC", 6, startingBal);
@@ -41,6 +46,19 @@ describe("concave custody contract", async () => {
       await mockFluidUsdc.approve(escrow.address, liquidityAmount);
 
       await mockUsdc.approve(escrow.address, liquidityAmount);
+
+      await nonfungiblePositionManager.createAndInitializePoolIfNecessary(
+        mockFluidUsdc.address,
+        mockUsdc.address,
+        3000,
+        "1000000000000000000"
+      );
+
+      console.log("continuing along");
+
+      await escrow.callStatic.transferAndSupply(liquidityAmount, liquidityAmount);
+
+      console.log("done ttt");
 
       await escrow.transferAndSupply(liquidityAmount, liquidityAmount);
 

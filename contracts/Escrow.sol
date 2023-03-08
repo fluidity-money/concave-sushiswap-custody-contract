@@ -124,59 +124,23 @@ contract Escrow {
     }
 
     function onERC721Received(
-        address _operator,
+        address /* _operator */,
         address /* _from */,
         uint256 /* tokenId */,
         bytes calldata /* data */
-    ) public {
-        // do nothing
-        // solhint-disable-empty-lines
+    ) public pure returns (bytes4) {
+        return this.onERC721Received.selector;
     }
 
+    /**
+     * @notice send the nft that uniswap gave us for the liquidity to _to
+     * @param _to that the nft should be sent to
+     */
     function redeem(address _to) public {
     	require(msg.sender == allowedSender_);
 
-    	(,,,,,,, uint128 liquidity,,,,) = positionManager_.positions(tokenId_);
+    	require(block.timestamp > redeemableBy_, "not redeemable yet");
 
-    	emit LiquidityDecreased(fluidSupplied_, usdcSupplied_);
-
-    	(
-    	    uint256 amount0,
-    	    uint256 amount1
-    	) = positionManager_.decreaseLiquidity(DecreaseLiquidityParams({
-    	    tokenId: tokenId_,
-    	    liquidity: liquidity,
-    	    amount0Min: fluidSupplied_,
-    	    amount1Min: fluidSupplied_,
-    	    deadline: block.timestamp
-    	}));
-
-    	uint256 fluidBalance = fluidUnderlying_.balanceOf(address(this));
-
-    	require(fluidBalance > 0, "fluid balance = 0");
-
-    	uint256 usdcBalance = fluidUnderlying_.balanceOf(address(this));
-
-    	require(usdcBalance > 0, "usdc balance = 0");
-
-    	bool rc = fluidUnderlying_.transfer(_to, fluidBalance);
-
-    	require(rc, "failed to transfer fusdc the address given");
-
-    	rc = usdcUnderlying_.transfer(_to, usdcBalance);
-
-    	require(rc, "failed to transfer usdc to the address given");
-
-    	if (fluidSupplied_ <= amount0) {
-    	    fluidSupplied_ = 0;
-    	} else {
-            fluidSupplied_ -= amount0;
-    	}
-
-         if (usdcSupplied_ <= amount1) {
-             usdcSupplied_ = 0;
-         } else {
-    	    usdcSupplied_ -= amount1;
-         }
+    	positionManager_.transferFrom(address(this), _to, tokenId_);
     }
 }

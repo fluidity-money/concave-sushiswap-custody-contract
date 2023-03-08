@@ -1,6 +1,8 @@
 
 import "@nomiclabs/hardhat-waffle";
 
+import "hardhat-dependency-compiler";
+
 const envForknetUrl = `FLU_ETHEREUM_FORKNET_URL_MAINNET`;
 
 const forknetUrl = process.env[envForknetUrl];
@@ -10,7 +12,10 @@ if (forknetUrl === undefined || forknetUrl == "")
 
 module.exports = {
   solidity: {
-    version: "0.8.16",
+    compilers: [
+      { version: "0.8.16" },
+      { version: "0.7.6" }
+    ],
     settings: {
       optimizer: {
         enabled: true,
