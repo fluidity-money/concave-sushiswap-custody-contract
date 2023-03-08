@@ -1,14 +1,12 @@
 
-import { ethers } from 'ethers';
-
 import * as hre from 'hardhat';
 
-import "hardhat";
+import type { ethers } from 'ethers';
 
 import { expect } from 'chai';
 
 const DEFAULT_NON_FUNGIBLE_POSITION_MANAGER =
-  0xC36442b4a4522E871399CD717aBDD847Ab11FE88;
+  "0xC36442b4a4522E871399CD717aBDD847Ab11FE88";
 
 const YEAR_PLUS_1 = 31536001;
 
@@ -26,17 +24,25 @@ describe("concave custody contract", async () => {
 
       const startingBal = 100000;
 
+      const liquidityAmount = 1000;
+
       const mockFluidUsdc = await deploy("ERC20", "Fluid USDC", "fUSDC", 18, startingBal);
+
       const mockUsdc = await deploy("ERC20", "USDC", "USDC", 6, startingBal);
 
       const escrow = await deploy(
         "Escrow",
+        rootSignerAddress,
         DEFAULT_NON_FUNGIBLE_POSITION_MANAGER,
         mockFluidUsdc.address,
         mockUsdc.address
       );
 
-      await escrow.transferAndSupply(1000, 1000);
+      await mockFluidUsdc.approve(escrow.address, liquidityAmount);
+
+      await mockUsdc.approve(escrow.address, liquidityAmount);
+
+      await escrow.transferAndSupply(liquidityAmount, liquidityAmount);
 
       await hre.network.provider.send("evm_increaseTime", [YEAR_PLUS_1]);
 

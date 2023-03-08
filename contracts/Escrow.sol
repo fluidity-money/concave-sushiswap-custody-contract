@@ -66,15 +66,15 @@ contract Escrow {
     ) public {
         require(msg.sender == allowedSender_, "only allowed sender");
 
-        require(redeemableBy_ != 0, "already supplied");
+        require(redeemableBy_ == 0, "already supplied");
 
         // take from the underlying user
 
-        bool rc = fluidUnderlying_.transferFrom(address(this), msg.sender, _fluidAmount);
+        bool rc = fluidUnderlying_.transferFrom(msg.sender, address(this), _fluidAmount);
 
         require(rc, "transfer from fluid failed");
 
-        rc = usdcUnderlying_.transferFrom(address(this), msg.sender, _usdcAmount);
+        rc = usdcUnderlying_.transferFrom(msg.sender, address(this), _usdcAmount);
 
         require(rc, "transfer from usdc failed");
 

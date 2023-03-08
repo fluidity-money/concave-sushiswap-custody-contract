@@ -11,5 +11,5 @@ ${ESCROW_OUT}: $(shell find contracts -type f)
 	@npx hardhat compile
 
 test:
-	@npx hardhat test
+	@npx hardhat --network forknet test
 

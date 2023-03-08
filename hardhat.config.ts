@@ -1,4 +1,6 @@
 
+import "@nomiclabs/hardhat-waffle";
+
 const envForknetUrl = `FLU_ETHEREUM_FORKNET_URL_MAINNET`;
 
 const forknetUrl = process.env[envForknetUrl];
@@ -9,11 +11,6 @@ if (forknetUrl === undefined || forknetUrl == "")
 module.exports = {
   solidity: {
     version: "0.8.16",
-    networks: {
-      forknet: {
-        url: forknetUrl
-      }
-    },
     settings: {
       optimizer: {
         enabled: true,
@@ -27,6 +24,11 @@ module.exports = {
         revertStrings: "debug",
       }
     },
+  },
+  networks: {
+    forknet: {
+      url: forknetUrl
+    }
   },
   etherscan: {
     apiKey: process.env.FLU_ETHERSCAN_API
