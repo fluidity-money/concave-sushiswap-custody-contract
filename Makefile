@@ -10,4 +10,6 @@ build: ${ESCROW_OUT}
 ${ESCROW_OUT}: $(shell find contracts -type f)
 	@npx hardhat compile
 
-test: ${ESCROW_OUT}
+test:
+	@npx hardhat test
+

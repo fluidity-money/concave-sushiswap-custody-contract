@@ -32,15 +32,15 @@ contract Escrow {
         uint256 usdcDraining
     );
 
-    address private allowedSender_;
+    address private immutable allowedSender_;
 
     uint256 private redeemableBy_;
 
-    INonfungiblePositionManager private positionManager_;
+    INonfungiblePositionManager private immutable positionManager_;
 
-    IERC20 private fluidUnderlying_;
+    IERC20 private immutable fluidUnderlying_;
 
-    IERC20 private usdcUnderlying_;
+    IERC20 private immutable usdcUnderlying_;
 
     uint256 private tokenId_;
 
@@ -123,23 +123,20 @@ contract Escrow {
         redeemableBy_ = block.timestamp + REDEEMABLE_SECONDS;
     }
 
+    function onERC721Received(
+        address _operator,
+        address /* _from */,
+        uint256 /* tokenId */,
+        bytes calldata /* data */
+    ) public {
+        // do nothing
+        // solhint-disable-empty-lines
+    }
+
     function redeem(address _to) public {
     	require(msg.sender == allowedSender_);
 
-    	(
-    	    ,
-    	    ,
-    	    ,
-    	    ,
-    	    ,
-    	    ,
-    	    ,
-    	    uint128 liquidity,
-    	    ,
-    	    ,
-    	    ,
-
-    	) = positionManager_.positions(tokenId_);
+    	(,,,,,,, uint128 liquidity,,,,) = positionManager_.positions(tokenId_);
 
     	emit LiquidityDecreased(fluidSupplied_, usdcSupplied_);
 
