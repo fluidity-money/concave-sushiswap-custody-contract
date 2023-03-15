@@ -3,8 +3,6 @@
 
 pragma solidity 0.8.16;
 
-import "./IERC20.sol";
-
 /**
 * @notice Modern and gas efficient ERC20 + EIP-2612 implementation.
 * @author Fluidity Money
@@ -18,7 +16,7 @@ import "./IERC20.sol";
 * @dev Do not manually set balances without updating totalSupply, as
 * the sum of all user balances must not exceed it.
 */
-contract ERC20 is IERC20 {
+contract ERC20 {
     event Transfer(address indexed from, address indexed to, uint256 value);
 
     event Approval(address indexed owner, address indexed spender, uint256 value);

@@ -1,15 +1,6 @@
 
 import "@nomiclabs/hardhat-waffle";
 
-import "hardhat-dependency-compiler";
-
-const envForknetUrl = `FLU_ETHEREUM_FORKNET_URL_MAINNET`;
-
-const forknetUrl = process.env[envForknetUrl];
-
-if (forknetUrl === undefined || forknetUrl == "")
-  throw new Error(`Forknet URL not supplied with ${envForknetUrl}`);
-
 module.exports = {
   solidity: {
     compilers: [
@@ -26,13 +17,13 @@ module.exports = {
         }
       },
       debug: {
-        revertStrings: "debug",
+        revertStrings: "*",
       }
     },
   },
   networks: {
-    forknet: {
-      url: forknetUrl
+    localhost: {
+      url: "http://127.0.2.1:8545"
     }
   },
   etherscan: {
