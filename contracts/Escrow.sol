@@ -9,23 +9,25 @@ uint256 constant REDEEMABLE_SECONDS = 365 days;
 
 contract Escrow {
 
-    event Redeemed(address indexed sender, uint256 amount);
+    event Redeemed(
+        address indexed recipient,
+        address indexed token,
+        uint256 amount
+    );
 
-    address private immutable allowedSender_;
+    address public immutable recipient_;
 
-    uint256 private immutable redeemableBy_;
+    uint256 public immutable redeemableBy_;
 
     bool private lock_;
 
-    constructor(address _allowedSender) {
+    constructor(address _recipient) {
         redeemableBy_ = block.timestamp + REDEEMABLE_SECONDS;
-        allowedSender_ = _allowedSender;
+        recipient_ = _recipient;
     }
 
     function redeem(IERC20 _asset) public {
         require(!lock_, "reentrant");
-
-        require(msg.sender == allowedSender_, "not allowed sender");
 
         require(block.timestamp > redeemableBy_, "not redeemable yet");
 
@@ -33,9 +35,9 @@ contract Escrow {
 
         uint256 balance = _asset.balanceOf(address(this));
 
-        emit Redeemed(address(_asset), balance);
+        emit Redeemed(recipient_, address(_asset), balance);
 
-        bool rc = _asset.transfer(msg.sender, balance);
+        bool rc = _asset.transfer(recipient_, balance);
 
         require(rc, "transfer failed");
 

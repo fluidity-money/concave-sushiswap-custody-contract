@@ -15,7 +15,7 @@ describe("concave custody contract", async () => {
   it(
     "should create a pair of new tokens, supply it on uniswap, and redeem the entire position after a year",
     async () => {
-      const [rootSigner, secondSigner] = await hre.ethers.getSigners();
+      const [rootSigner] = await hre.ethers.getSigners();
 
       const rootSignerAddress = await rootSigner.getAddress();
 
@@ -30,15 +30,9 @@ describe("concave custody contract", async () => {
       await expect(escrow.callStatic.redeem(mockUsdc.address))
         .to.be.revertedWith("not redeemable yet");
 
-      await expect(escrow.connect(secondSigner).callStatic.redeem(mockUsdc.address))
-        .to.be.revertedWith("not allowed sender");
-
       await hre.network.provider.send("evm_increaseTime", [YEAR_PLUS_100]);
 
       await escrow.redeem(mockUsdc.address);
-
-      await expect(escrow.connect(secondSigner).callStatic.redeem(mockUsdc.address))
-        .to.be.revertedWith("not allowed sender");
 
       expect(await mockUsdc.balanceOf(rootSignerAddress))
         .to.be.equal(startingBal);
