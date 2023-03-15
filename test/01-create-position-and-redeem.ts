@@ -38,11 +38,4 @@ describe("concave custody contract", async () => {
         .to.be.equal(startingBal);
     }
   );
-
-  it(
-    "should take an existing pair of tokens, supply them on uniswap, redeem the entire position after a year and a half",
-    async () => {
-
-    }
-  );
 });
